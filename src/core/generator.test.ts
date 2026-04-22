@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import {
   defaultRandomPasswordValues,
   generateRandomPassword,
+  type RandomPasswordOptions,
 } from './generator'
-import { CHARSET } from '#/lib/charset'
 
 describe('generatePassword', () => {
   describe('randomGenerator', () => {
@@ -14,25 +14,86 @@ describe('generatePassword', () => {
       })
       it('includes uppercase letter', () => {
         const result = generateRandomPassword(defaultRandomPasswordValues)
-        expect(result.includes(CHARSET.upper))
+        expect(result).toMatch(/[A-Z]/)
       })
       it('includes numbers', () => {
         const result = generateRandomPassword(defaultRandomPasswordValues)
-        expect(result.includes(CHARSET.numbers))
+        expect(result).toMatch(/[0-9]/)
       })
       it('includes special character', () => {
         const result = generateRandomPassword(defaultRandomPasswordValues)
-        expect(result.includes(CHARSET.special))
+        expect(result).toMatch(/[!@#$%^&*()]/)
       })
     })
-    it('returs password with correct length')
-    it('includes lowercase letter')
-    it('includes uppercase letter when enabled')
-    it('includes number when enabled')
-    it('includes special character when enabled')
-    it('does not includes uppercase letter when disabled')
-    it('does not includes number when disabled')
-    it('does not includes special character when disabled')
+    it('returs password with correct length', () => {
+      const args = {
+        ...defaultRandomPasswordValues,
+        length: 10,
+      }
+      const result = generateRandomPassword(args)
+      expect(result.length === 10).toBe(true)
+    })
+    it('includes lowercase letter', () => {
+      const result = generateRandomPassword(defaultRandomPasswordValues)
+      expect(result).toMatch(/[a-z]/)
+    })
+    it('includes uppercase letter when enabled', () => {
+      const args: RandomPasswordOptions = {
+        ...defaultRandomPasswordValues,
+        flags: { ...defaultRandomPasswordValues.flags, includeUppercase: true },
+      }
+      const result = generateRandomPassword(args)
+      expect(result).toMatch(/[A-Z]/)
+    })
+    it('includes number when enabled', () => {
+      const args: RandomPasswordOptions = {
+        ...defaultRandomPasswordValues,
+        flags: { ...defaultRandomPasswordValues.flags, includeNumbers: true },
+      }
+      const result = generateRandomPassword(args)
+      expect(result).toMatch(/[0-9]/)
+    })
+    it('includes special character when enabled', () => {
+      const args: RandomPasswordOptions = {
+        ...defaultRandomPasswordValues,
+        flags: { ...defaultRandomPasswordValues.flags, includeNumbers: true },
+      }
+      const result = generateRandomPassword(args)
+      expect(result).toMatch(/[!@#$%^&*()]/)
+    })
+    it('does not includes uppercase letter when disabled', () => {
+      const args: RandomPasswordOptions = {
+        ...defaultRandomPasswordValues,
+        flags: {
+          ...defaultRandomPasswordValues.flags,
+          includeUppercase: false,
+        },
+      }
+      const result = generateRandomPassword(args)
+      expect(result).not.toMatch(/[A-Z]/)
+    })
+    it('does not includes number when disabled', () => {
+      const args: RandomPasswordOptions = {
+        ...defaultRandomPasswordValues,
+        flags: {
+          ...defaultRandomPasswordValues.flags,
+          includeNumbers: false,
+        },
+      }
+      const result = generateRandomPassword(args)
+      expect(result).not.toMatch(/[0-9]/)
+    })
+    it('does not includes special character when disabled', () => {
+      const args: RandomPasswordOptions = {
+        ...defaultRandomPasswordValues,
+        flags: {
+          ...defaultRandomPasswordValues.flags,
+          includeSpecialChars: false,
+        },
+      }
+      const result = generateRandomPassword(args)
+      expect(result).not.toMatch(/[!@#$%^&*()]/)
+    })
 
     it('throws for too short length', () => {
       const args = {
@@ -51,4 +112,7 @@ describe('generatePassword', () => {
       expect(() => generateRandomPassword(args)).toThrow('most')
     })
   })
+  // describe('wordGenerator', () => {
+  //   describe('defaultOptions', () => {})
+  // })
 })
