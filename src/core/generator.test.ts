@@ -1,24 +1,27 @@
 import { describe, expect, it } from 'vitest'
-import { defaultGeneratorValues, generateRandom } from './generator'
+import {
+  defaultRandomPasswordValues,
+  generateRandomPassword,
+} from './generator'
 import { CHARSET } from '#/lib/charset'
 
 describe('generatePassword', () => {
   describe('randomGenerator', () => {
     describe('defaultOptions', () => {
       it('returns string of lenght 16', () => {
-        const result = generateRandom(defaultGeneratorValues)
+        const result = generateRandomPassword(defaultRandomPasswordValues)
         expect(result.length).toBe(16)
       })
       it('includes uppercase letter', () => {
-        const result = generateRandom(defaultGeneratorValues)
+        const result = generateRandomPassword(defaultRandomPasswordValues)
         expect(result.includes(CHARSET.upper))
       })
       it('includes numbers', () => {
-        const result = generateRandom(defaultGeneratorValues)
+        const result = generateRandomPassword(defaultRandomPasswordValues)
         expect(result.includes(CHARSET.numbers))
       })
       it('includes special character', () => {
-        const result = generateRandom(defaultGeneratorValues)
+        const result = generateRandomPassword(defaultRandomPasswordValues)
         expect(result.includes(CHARSET.special))
       })
     })
@@ -33,19 +36,19 @@ describe('generatePassword', () => {
 
     it('throws for too short length', () => {
       const args = {
-        ...defaultGeneratorValues,
+        ...defaultRandomPasswordValues,
         length: 3,
       }
 
-      expect(() => generateRandom(args)).toThrow('least')
+      expect(() => generateRandomPassword(args)).toThrow('least')
     })
     it('throws for too long length', () => {
       const args = {
-        ...defaultGeneratorValues,
+        ...defaultRandomPasswordValues,
         length: 257,
       }
 
-      expect(() => generateRandom(args)).toThrow('most')
+      expect(() => generateRandomPassword(args)).toThrow('most')
     })
   })
 })

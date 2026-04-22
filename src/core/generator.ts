@@ -4,18 +4,18 @@ import { randomChar, shuffle } from '#/lib/random'
 const MAX_LENGTH = 256
 const MIN_LENGTH = 4
 
-export type randomFlags = {
+export type RandomFlags = {
   includeUppercase: boolean
   includeNumbers: boolean
   includeSpecialChars: boolean
 }
 
-export type randomGenerator = {
+export type RandomPasswordOptions = {
   length: number
-  flags: randomFlags
+  flags: RandomFlags
 }
 
-export const defaultGeneratorValues: randomGenerator = {
+export const defaultRandomPasswordValues: RandomPasswordOptions = {
   length: 16,
   flags: {
     includeNumbers: true,
@@ -24,7 +24,10 @@ export const defaultGeneratorValues: randomGenerator = {
   },
 }
 
-export function generateRandom({ length, flags }: randomGenerator): string {
+export function generateRandomPassword({
+  length,
+  flags,
+}: RandomPasswordOptions): string {
   if (MAX_LENGTH <= length) {
     throw new Error('Length must be at most 256')
   }
@@ -68,14 +71,20 @@ export function generateRandom({ length, flags }: randomGenerator): string {
 const MAX_COUNT = 10
 const MIN_COUNT = 2
 
-type wordsFlags = {
+type WordFlags = {
   includeUppercase: boolean
   includeNumber: boolean
 }
 
-type wordsGenerator = {
+type WordLang = {
+  includeEnglish: boolean
+  includePolish: boolean
+}
+
+type WordPasswordOptions = {
   count: number
-  flags: wordsFlags
+  flags: WordFlags
+  langs: WordLang
   separator:
     | 'hyphens'
     | 'spaces'
@@ -85,4 +94,16 @@ type wordsGenerator = {
     | 'nothing'
 }
 
-export function generateWords() {}
+const defaultWordPasswordValues: WordPasswordOptions = {
+  count: 5,
+  flags: { includeUppercase: true, includeNumber: false },
+  langs: { includeEnglish: true, includePolish: false },
+  separator: 'hyphens',
+}
+
+export function generateWordPassword(
+  { count, flags, separator }: WordPasswordOptions,
+  wordsList: Array<string>,
+): string {
+  return ''
+}
