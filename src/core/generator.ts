@@ -70,6 +70,7 @@ export function generateRandomPassword({
 
 const MAX_COUNT = 10
 const MIN_COUNT = 2
+const MAX_CUSTOM_SEPARATOR_LENGTH = 5
 
 type WordFlags = {
   includeUppercase: boolean
@@ -81,29 +82,64 @@ type WordLang = {
   includePolish: boolean
 }
 
+type Separator = '-' | ' ' | '.' | ',' | '_' | ''
+
+type SeparatorOption =
+  | { type: 'default'; value: Separator }
+  | { type: 'custom'; value: string }
+
 type WordPasswordOptions = {
   count: number
   flags: WordFlags
   langs: WordLang
-  separator:
-    | 'hyphens'
-    | 'spaces'
-    | 'periods'
-    | 'commas'
-    | 'underscores'
-    | 'nothing'
+  separator: SeparatorOption
 }
 
 const defaultWordPasswordValues: WordPasswordOptions = {
   count: 5,
   flags: { includeUppercase: true, includeNumber: false },
   langs: { includeEnglish: true, includePolish: false },
-  separator: 'hyphens',
+  separator: { type: 'default', value: '-' },
 }
 
 export function generateWordPassword(
   { count, flags, separator }: WordPasswordOptions,
   wordsList: Array<string>,
 ): string {
-  return ''
+  // TODO check all the ifs max,min,separator
+
+  const bytes = new Uint8Array(count)
+  crypto.getRandomValues(bytes)
+
+  let array = Array.from(bytes).map((b) => wordsList[b % wordsList.length])
+
+  if (flags.includeUppercase) {
+    array = array.map((word) => word[0].toUpperCase() + word.slice(1))
+  }
+
+  if (flags.includeNumber) {
+    array = array.map((word) => word + randomChar(CHARSET.numbers))
+  }
+
+  return array.join(separator.value)
 }
+
+// const wordList = [
+//   'truck',
+//   'phone',
+//   'elephant',
+//   'music',
+//   'nachos',
+//   'compuer',
+//   'design',
+// ]
+// const args: WordPasswordOptions = {
+//   ...defaultWordPasswordValues,
+//   separator: { type: 'custom', value: 'dupa' },
+//   flags: {
+//     ...defaultWordPasswordValues.flags,
+//     includeNumber: true,
+//   },
+// }
+// const res = generateWordPassword(args, wordList)
+// console.log(res)
