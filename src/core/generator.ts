@@ -1,5 +1,5 @@
 import { CHARSET } from '#/lib/charset'
-import { randomChar, shuffle } from '#/lib/random'
+import { randomChar, randomInt, shuffle } from '#/lib/random'
 
 const MAX_LENGTH = 256
 const MIN_LENGTH = 4
@@ -111,7 +111,10 @@ export function generateWordPassword(
   const bytes = new Uint8Array(count)
   crypto.getRandomValues(bytes)
 
-  let array = Array.from(bytes).map((b) => wordsList[b % wordsList.length])
+  let array = Array.from(
+    { length: count },
+    () => wordsList[randomInt(wordsList.length)],
+  )
 
   if (flags.includeUppercase) {
     array = array.map((word) => word[0].toUpperCase() + word.slice(1))
@@ -133,13 +136,16 @@ export function generateWordPassword(
 //   'compuer',
 //   'design',
 // ]
+
+// const res = await fetch('http://localhost:3000/words/pl')
+
 // const args: WordPasswordOptions = {
 //   ...defaultWordPasswordValues,
-//   separator: { type: 'custom', value: 'dupa' },
+//   separator: { type: 'custom', value: '   ' },
 //   flags: {
 //     ...defaultWordPasswordValues.flags,
 //     includeNumber: true,
 //   },
 // }
-// const res = generateWordPassword(args, wordList)
-// console.log(res)
+// const result = generateWordPassword(args, await res.json())
+// console.log(result)
