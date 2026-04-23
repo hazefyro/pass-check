@@ -29,10 +29,10 @@ export function generateRandomPassword({
   flags,
 }: RandomPasswordOptions): string {
   if (MAX_LENGTH <= length) {
-    throw new Error('Length must be at most 256')
+    throw new Error('Password length must be at most 256')
   }
   if (length <= MIN_LENGTH) {
-    throw new Error('Length must be at least 4')
+    throw new Error('Password length must be at least 4')
   }
   let charset: Array<string> = [CHARSET.lower]
   let password = ''
@@ -106,8 +106,18 @@ export function generateWordPassword(
   { count, flags, separator }: WordPasswordOptions,
   wordsList: Array<string>,
 ): string {
-  // TODO check all the ifs max,min,separator
-
+  if (count <= MIN_COUNT) {
+    throw new Error('Word count must be at least 2')
+  }
+  if (MAX_COUNT <= count) {
+    throw new Error('Word count must be at most 10')
+  }
+  if (
+    separator.type === 'custom' &&
+    MAX_CUSTOM_SEPARATOR_LENGTH <= separator.value.length
+  ) {
+    throw new Error('Separator length must be at most 5')
+  }
   const bytes = new Uint8Array(count)
   crypto.getRandomValues(bytes)
 
