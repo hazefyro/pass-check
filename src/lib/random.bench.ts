@@ -3,7 +3,7 @@ import { shuffle } from './random'
 import { CHARSET } from './charset'
 
 describe('shuffle performance', () => {
-  bench('crypto shuffle', () => {
+  bench('shuffle', () => {
     shuffle(CHARSET.lower)
   })
 })
