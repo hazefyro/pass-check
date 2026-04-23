@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GenRouteImport } from './routes/gen'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WordsLangRouteImport } from './routes/words.$lang'
 
 const GenRoute = GenRouteImport.update({
   id: '/gen',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WordsLangRoute = WordsLangRouteImport.update({
+  id: '/words/$lang',
+  path: '/words/$lang',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gen': typeof GenRoute
+  '/words/$lang': typeof WordsLangRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gen': typeof GenRoute
+  '/words/$lang': typeof WordsLangRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gen': typeof GenRoute
+  '/words/$lang': typeof WordsLangRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gen'
+  fullPaths: '/' | '/gen' | '/words/$lang'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gen'
-  id: '__root__' | '/' | '/gen'
+  to: '/' | '/gen' | '/words/$lang'
+  id: '__root__' | '/' | '/gen' | '/words/$lang'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GenRoute: typeof GenRoute
+  WordsLangRoute: typeof WordsLangRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/words/$lang': {
+      id: '/words/$lang'
+      path: '/words/$lang'
+      fullPath: '/words/$lang'
+      preLoaderRoute: typeof WordsLangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GenRoute: GenRoute,
+  WordsLangRoute: WordsLangRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
