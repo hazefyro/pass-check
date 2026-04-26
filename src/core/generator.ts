@@ -136,26 +136,3 @@ export function generateWordPassword(
 
   return array.join(separator.value)
 }
-
-// const wordList = [
-//   'truck',
-//   'phone',
-//   'elephant',
-//   'music',
-//   'nachos',
-//   'compuer',
-//   'design',
-// ]
-
-// const res = await fetch('http://localhost:3000/words/pl')
-
-// const args: WordPasswordOptions = {
-//   ...defaultWordPasswordValues,
-//   separator: { type: 'custom', value: '   ' },
-//   flags: {
-//     ...defaultWordPasswordValues.flags,
-//     includeNumber: true,
-//   },
-// }
-// const result = generateWordPassword(args, await res.json())
-// console.log(result)
