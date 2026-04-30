@@ -1,12 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '#/components/ui/button'
 import { RefreshCcw } from 'lucide-react'
 
-export const Route = createFileRoute('/gen')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
+export default function Gen() {
   return (
     <div className="m-10">
       <Button
