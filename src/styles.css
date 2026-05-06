@@ -122,3 +122,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes spin-once {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility animate-spin-once {
+  animation: spin-once 0.5s ease-out 1;
+}
