@@ -1,22 +1,19 @@
+import json
 import re
 
+
 def main():
-  raw_words = []
-  with open("words.txt") as f:
-    for x in f:
-      raw_words.append(re.findall(r"[a-z]", x))
+    words = []
 
-  words = []
-  for x in raw_words:
-    words.append("".join(x))
+    with open("words.txt", encoding="utf-8") as f:
+        for line in f:
+            word = "".join(re.findall(r"[a-ząćęłńóśźż]+", line.lower()))
+            if word:
+                words.append(word)
 
-  with open("words-pl.json", "w") as f:
-    f.write("[ \n")
-    for x in words:
-      f.write('\t' + '\"' + x  + '\"' + "," + '\n')
-
-    f.write("] \n")
+    with open("words-pl.json", "w", encoding="utf-8") as f:
+        json.dump(words, f, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
-  main()
+    main()
