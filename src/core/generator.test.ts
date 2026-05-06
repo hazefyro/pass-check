@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest'
 import {
   defaultRandomPasswordValues,
   generateRandomPassword,
-  type RandomPasswordOptions,
 } from './generator'
+import type { RandomPasswordOptions } from './generator'
 
 describe('generatePassword', () => {
   describe('randomGenerator', () => {
     describe('defaultOptions', () => {
-      it('returns string of lenght 16', () => {
+      it('returns string of length 16', () => {
         const result = generateRandomPassword(defaultRandomPasswordValues)
         expect(result.length).toBe(16)
       })
@@ -25,7 +25,7 @@ describe('generatePassword', () => {
         expect(result).toMatch(/[!@#$%^&*()]/)
       })
     })
-    it('returs password with correct length', () => {
+    it('returns password with correct length', () => {
       const args = {
         ...defaultRandomPasswordValues,
         length: 10,
@@ -111,6 +111,7 @@ describe('generatePassword', () => {
 
       expect(() => generateRandomPassword(args)).toThrow('most')
     })
+    // TODO FINISH TESTS
   })
   // describe('wordGenerator', () => {
   //   describe('defaultOptions', () => {})

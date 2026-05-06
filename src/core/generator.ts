@@ -34,7 +34,7 @@ export function generateRandomPassword({
   if (length <= MIN_LENGTH) {
     throw new Error('Password length must be at least 4')
   }
-  let charset: Array<string> = [CHARSET.lower]
+  const charset: Array<string> = [CHARSET.lower]
   let password = ''
 
   if (flags.includeUppercase) {
