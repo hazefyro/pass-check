@@ -10,7 +10,11 @@ export function isCommonPassword(password: string, set: Set<string>): boolean {
 
 export function hasWalks(password: string, walks: Array<string>): boolean {
   const lower = password.toLocaleLowerCase()
-  return walks.some((walk) => lower.includes(walk))
+  if (lower.length < 4) return false
+  return walks.some((walk) => {
+    const lowerWalk = walk.toLocaleLowerCase()
+    return lower.includes(lowerWalk) || lowerWalk.includes(lower)
+  })
 }
 
 // (.{2,})\1
