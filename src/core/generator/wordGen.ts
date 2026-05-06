@@ -15,10 +15,10 @@ type WordLang = {
   includePolish: boolean
 }
 
-type Separator = '-' | ' ' | '.' | ',' | '_' | ''
+export type Separators = '-' | ' ' | '.' | ',' | '_' | ''
 
 type SeparatorOption =
-  | { type: 'default'; value: Separator }
+  | { type: 'default'; value: Separators }
   | { type: 'custom'; value: string }
 
 export type WordPasswordOptions = {
@@ -29,7 +29,7 @@ export type WordPasswordOptions = {
 }
 
 export const defaultWordPasswordValues: WordPasswordOptions = {
-  count: 5,
+  count: 4,
   flags: { includeUppercase: true, includeNumber: false },
   langs: { includeEnglish: true, includePolish: false },
   separator: { type: 'default', value: '-' },
