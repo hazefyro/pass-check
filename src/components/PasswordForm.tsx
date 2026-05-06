@@ -38,9 +38,11 @@ export function PasswordForm({ password, onChange }: Props) {
 
   return (
     <form
+      method="post"
       id="password-form"
       onSubmit={(e) => {
         e.stopPropagation()
+        e.preventDefault()
         void form.handleSubmit()
       }}
     >
