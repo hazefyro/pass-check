@@ -1,4 +1,5 @@
 export function getPasswordEntropy(password: string): number {
+  if (password.length === 0) return 0
   const length = password.length
   const array = password.split('')
   const uniqueChars = new Set(array)
@@ -11,11 +12,11 @@ export function getPasswordEntropy(password: string): number {
 // 40-60 bits -- moderate -- 1
 // 60-80 bits -- strong for most use cases -- 2
 // 80+ bits -- very strong -- 3
-type StrengthLabel = 0 | 1 | 2 | 3
+export type StrengthLabel = 'weak' | 'moderate' | 'strong' | 'veryStrong'
 
 export function getStrengthLabel(entropy: number): StrengthLabel {
-  if (entropy < 40) return 0
-  if (entropy < 60) return 1
-  if (entropy < 80) return 2
-  return 3
+  if (entropy < 40) return 'weak'
+  if (entropy < 60) return 'moderate'
+  if (entropy < 80) return 'strong'
+  return 'veryStrong'
 }
