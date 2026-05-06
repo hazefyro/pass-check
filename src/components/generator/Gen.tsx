@@ -1,13 +1,5 @@
 import { Button } from '#/components/ui/button'
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverDescription,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverTrigger,
-} from '#/components/ui/popover.tsx'
 import type { PasswordGeneratorType } from '#/core/generator/genType'
 import {
   defaultRandomPasswordValues,
@@ -17,10 +9,20 @@ import {
   defaultWordPasswordValues,
   generateWordPassword,
 } from '#/core/generator/wordGen'
-import { Cog, RefreshCcw } from 'lucide-react'
+import { CheckIcon, Cog, CopyIcon, RefreshCcw } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { ButtonGroup, ButtonGroupSeparator } from '../ui/button-group'
 
+import { useCopyToClipboard } from '#/hook/use-copy-to-clipboard'
+import { useQuery } from '@tanstack/react-query'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '../ui/drawer'
 import { Label } from '../ui/label'
 import {
   Select,
@@ -34,13 +36,28 @@ import { RandomOptions } from './RandomOpts'
 import { WordOptions } from './WordOpts'
 
 type Props = {
+  password: string
   setPassword: (password: string) => void
 }
 
-export default function Gen({ setPassword }: Props) {
+export default function Gen({ password, setPassword }: Props) {
   const [type, setType] = useState<PasswordGeneratorType>('random')
   const [randomOpts, setRandomOpts] = useState(defaultRandomPasswordValues)
   const [wordOpts, setWordOpts] = useState(defaultWordPasswordValues)
+  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 1500 })
+
+  const { data: englishWords } = useQuery({
+    queryKey: ['englishWords'],
+    queryFn: () => fetchWords('/files/words.json'),
+    enabled: wordOpts.langs.includeEnglish,
+    staleTime: Infinity,
+  })
+  const { data: polishWords } = useQuery({
+    queryKey: ['polishWords'],
+    queryFn: () => fetchWords('/files/words-pl.json'),
+    enabled: wordOpts.langs.includePolish,
+    staleTime: Infinity,
+  })
 
   const iconRef = useRef<SVGSVGElement>(null)
 
@@ -55,39 +72,42 @@ export default function Gen({ setPassword }: Props) {
   }
 
   function handleGenerate(genType: PasswordGeneratorType) {
-    let password = ''
+    let newPassword = ''
     if (genType === 'random') {
-      password = generateRandomPassword(randomOpts)
+      newPassword = generateRandomPassword(randomOpts)
     } else {
-      const words = ['test', 'xD', 'lol']
-      password = generateWordPassword(wordOpts, words)
+      const words: string[] = []
+      if (wordOpts.langs.includeEnglish) words.push(...(englishWords ?? []))
+      if (wordOpts.langs.includePolish) words.push(...(polishWords ?? []))
+      newPassword = generateWordPassword(wordOpts, words)
     }
 
-    setPassword(password)
+    setPassword(newPassword)
   }
 
   return (
     <div>
-      <ButtonGroup>
+      <ButtonGroup className="mx-auto">
         <Button size="lg" className="cursor-pointer" onClick={handleClick}>
           Generate
           <RefreshCcw ref={iconRef} aria-hidden="true" />
         </Button>
         <ButtonGroupSeparator />
-        <Popover>
-          <PopoverTrigger asChild>
+        <Drawer direction="right">
+          <DrawerTrigger asChild>
             <Button size="lg" className="cursor-pointer">
+              Settings
               <Cog />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <PopoverHeader>
-              <PopoverTitle>Generator Settings</PopoverTitle>
-              <PopoverDescription>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Generator Settings</DrawerTitle>
+              <DrawerDescription>
                 Choose your preferred password.
-              </PopoverDescription>
-            </PopoverHeader>
-            <div className="grid gap-4 mt-4">
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="flex flex-col gap-6 px-4 pb-6 pt-4">
               <div className="grid grid-cols-2 gap-4 items-center">
                 <Label htmlFor="generator type">Type</Label>
                 <Select
@@ -101,13 +121,13 @@ export default function Gen({ setPassword }: Props) {
                   </SelectTrigger>
                   <SelectContent position="popper">
                     <SelectGroup>
-                      <SelectItem value="random">random</SelectItem>
-                      <SelectItem value="word">word</SelectItem>
+                      <SelectItem value="random">Random</SelectItem>
+                      <SelectItem value="word">Word</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid gap-2">
+              <div className="flex flex-col gap-3">
                 {type === 'random' ? (
                   <RandomOptions value={randomOpts} onChange={setRandomOpts} />
                 ) : (
@@ -115,9 +135,28 @@ export default function Gen({ setPassword }: Props) {
                 )}
               </div>
             </div>
-          </PopoverContent>
-        </Popover>
+          </DrawerContent>
+        </Drawer>
+        <ButtonGroupSeparator />
+        <Button
+          size={'lg'}
+          aria-label={isCopied ? 'Copied' : 'Copy'}
+          onClick={() => copyToClipboard(password)}
+        >
+          Copy
+          {isCopied ? (
+            <CheckIcon aria-hidden="true" />
+          ) : (
+            <CopyIcon aria-hidden="true" />
+          )}
+        </Button>
       </ButtonGroup>
     </div>
   )
+}
+
+export async function fetchWords(href: string): Promise<string[]> {
+  const res = await fetch(href)
+  const json = await res.json()
+  return json
 }
