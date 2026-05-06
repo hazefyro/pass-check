@@ -1,7 +1,17 @@
-import type { WordPasswordOptions } from '#/core/generator/wordGen'
+import type { Separators, WordPasswordOptions } from '#/core/generator/wordGen'
 import { Field, FieldContent, FieldLabel } from '../ui/field'
-import { Input } from '../ui/input'
+import { InputGroup, InputGroupInput } from '../ui/input-group'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
 import { Separator } from '../ui/separator'
+import { Slider } from '../ui/slider'
 import { Switch } from '../ui/switch'
 
 export const WordOptions = ({
@@ -30,15 +40,12 @@ export const WordOptions = ({
             {value.count}
           </span>
         </div>
-        <Input
+        <Slider
           id="range-slider"
-          type="range"
-          min="2"
-          max="10"
-          value={value.count}
-          onChange={(v) =>
-            onChange({ ...value, count: parseInt(v.target.value) })
-          }
+          min={2}
+          max={10}
+          defaultValue={[value.count]}
+          onValueChange={(v) => onChange({ ...value, count: v[0] })}
           className="grid-cols-2 bg-muted accent-primary h-2 cursor-pointer appearance-none"
         />
       </Field>
@@ -86,6 +93,81 @@ export const WordOptions = ({
           />
         </Field>
       ))}
+      <Separator />
+      <FieldLabel>Separator</FieldLabel>
+      <Field>
+        <InputGroup>
+          <InputGroupInput
+            className="w-full"
+            id="custom-separator"
+            name="custom-separator"
+            value={
+              value.separator.type === 'custom' ? value.separator.value : ''
+            }
+            placeholder="custom separator"
+            autoComplete="off"
+            onChange={(v) => {
+              onChange({
+                ...value,
+                separator: { type: 'custom', value: v.target.value },
+              })
+            }}
+            type="text"
+          />
+        </InputGroup>
+        <SeparatorSelect value={value} onChange={onChange} />
+      </Field>
+    </div>
+  )
+}
+
+const SeparatorSelect = ({
+  value,
+  onChange,
+}: {
+  value: WordPasswordOptions
+  onChange: (opts: WordPasswordOptions) => void
+}) => {
+  const separators: { separator: Separators; name: string }[] = [
+    { separator: '-', name: 'Hyphen' },
+    { separator: ' ', name: 'Space' },
+    { separator: '.', name: 'Dot' },
+    { separator: ',', name: 'Comma' },
+    { separator: '_', name: 'Underscore' },
+    { separator: '', name: 'None' },
+  ]
+
+  const handleSelect = (separatorName: string) => {
+    const sep =
+      separators.find((s) => s.name === separatorName)?.separator ?? '-'
+    onChange({ ...value, separator: { type: 'default', value: sep } })
+  }
+
+  const selectedName =
+    value.separator.type === 'default'
+      ? (separators.find((s) => s.separator === value.separator.value)?.name ??
+        'Hyphen')
+      : undefined
+
+  return (
+    <div>
+      <Field>
+        <Select value={selectedName} onValueChange={(v) => handleSelect(v)}>
+          <SelectTrigger>
+            <SelectValue placeholder="select separator"></SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Separator</SelectLabel>
+              {separators.map(({ name }) => (
+                <SelectItem key={name} value={name}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </Field>
     </div>
   )
 }

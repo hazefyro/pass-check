@@ -1,6 +1,6 @@
 import type { RandomPasswordOptions } from '#/core/generator/randomGen'
 import { Field, FieldContent, FieldLabel } from '../ui/field'
-import { Input } from '../ui/input'
+import { Slider } from '../ui/slider'
 import { Switch } from '../ui/switch'
 
 export const RandomOptions = ({
@@ -25,15 +25,13 @@ export const RandomOptions = ({
             {value.length}
           </span>
         </div>
-        <Input
+        <Slider
           id="range-slider"
-          type="range"
-          min="4"
-          max="256"
-          value={value.length}
-          onChange={(v) =>
-            onChange({ ...value, length: parseInt(v.target.value) })
-          }
+          min={4}
+          max={64}
+          step={1}
+          defaultValue={[value.length]}
+          onValueChange={(v) => onChange({ ...value, length: v[0] })}
           className="grid-cols-2 bg-muted accent-primary h-2 cursor-pointer appearance-none"
         />
       </Field>
