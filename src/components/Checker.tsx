@@ -95,7 +95,7 @@ export const Checker = ({ password }: Props) => {
           />
         ))}
       </div>
-      <ul className="grid grid-cols-2 gap-x-4">
+      <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
         {reqs.map(({ name, pass }) => (
           <li className="flex items-center gap-1" key={name}>
             {pass ? (
