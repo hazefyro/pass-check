@@ -72,27 +72,33 @@ export const WordOptions = ({
       ))}
       <Separator />
       <FieldLabel>Words language</FieldLabel>
-      {langSwitches.map(({ name, key }) => (
-        <Field
-          orientation="horizontal"
-          className="max-w-sm grid-cols-3"
-          key={key}
-        >
-          <FieldContent className="grid">
-            <FieldLabel htmlFor="switch-focus-mode" className="grid">
-              {name}
-            </FieldLabel>
-          </FieldContent>
-          <Switch
-            id="switch-focus-mode"
-            className="grid-cols-2"
-            checked={value.langs[key]}
-            onCheckedChange={(v) =>
-              onChange({ ...value, langs: { ...value.langs, [key]: v } })
-            }
-          />
-        </Field>
-      ))}
+      {langSwitches.map(({ name, key }) => {
+        const isLast =
+          value.langs[key] &&
+          Object.values(value.langs).filter(Boolean).length === 1
+        return (
+          <Field
+            orientation="horizontal"
+            className="max-w-sm grid-cols-3"
+            key={key}
+          >
+            <FieldContent className="grid">
+              <FieldLabel htmlFor="switch-focus-mode" className="grid">
+                {name}
+              </FieldLabel>
+            </FieldContent>
+            <Switch
+              id="switch-focus-mode"
+              className="grid-cols-2"
+              checked={value.langs[key]}
+              disabled={isLast}
+              onCheckedChange={(v) =>
+                onChange({ ...value, langs: { ...value.langs, [key]: v } })
+              }
+            />
+          </Field>
+        )
+      })}
       <Separator />
       <FieldLabel>Separator</FieldLabel>
       <Field>
