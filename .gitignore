@@ -10,3 +10,9 @@ CLAUDE.md
 .claude
 .idea
 .cmux
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
